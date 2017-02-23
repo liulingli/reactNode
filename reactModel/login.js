@@ -18,12 +18,7 @@ var Content = React.createClass({
 		})
 
 module.exports = function(){
-	return React.renderToString(
-		React.createElement("html",{},
-			React.createElement("head",{},null),
-			React.createElement("body",{},
+	return React.renderToStaticMarkup(
 				React.createElement(Content)
 			)
-		)
-	);
 }

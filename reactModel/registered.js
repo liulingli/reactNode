@@ -8,7 +8,7 @@ var Content = React.createClass({
 							React.createElement("input",{type:"text",name:"name"},null)
 						),
 						React.createElement("label",{},
-							React.createElement("span",{},"用户名："),
+							React.createElement("span",{},"密码："),
 							React.createElement("input",{type:"password",name:"password"},null)
 						),
 						React.createElement("button",{},"提交")
@@ -17,12 +17,7 @@ var Content = React.createClass({
 			}
 		})
 module.exports = function(){
-	return React.renderToString(
-		React.createElement("html",{},
-			React.createElement("head",{},null),
-			React.createElement("body",{},
+	return React.renderToStaticMarkup(
 				React.createElement(Content)
 			)
-		)
-	);
 }

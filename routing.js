@@ -1,17 +1,26 @@
 var express = require("express"),
 	React = require('react'),
 	babel = require("babel-register"),
-	login = require("./reactModel/login.js"),
+
+	login = require("./reactModel/login.js"),//登录模块
+	index = require("./reactModel/index.js"),//首页模块
+	registered = require("./reactModel/registered.js"),//注册模块
+
 	MongoClient = require("mongodb").MongoClient,
 	bodyParser = require('body-parser'),
-	registered = require("./reactModel/registered.js"),
 	expressHogan = require('express-hogan.js'),
     cookieParser = require('cookie-parser'),
-    session = require('express-session'),
-	index = require("./reactModel/index.js");
+	ejs = require('ejs'),
+    session = require('express-session');
 
 var app = express();
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
+
+app.engine('.html',ejs.__express);//使用ejs解析html模板
+
+app.set('view engine', 'html');
+
+app.use('/public',express.static(__dirname + '/public'));//静态文件路径设置
 
 app.use(cookieParser());
 app.use(session({
@@ -24,21 +33,21 @@ app.use(session({
 
 app.get("/",function(req,res){
 	var statusJson = {status:!!req.session.status} 
-	res.end(index(statusJson));
+	res.render("index",{component:index(statusJson),status:statusJson.status?"登录":"未登录"});
 })//首页
 
 app.get("/login",function(req,res){
-	res.end(login());
+	res.render("login",{component:login()});
 })//登录
 
 app.get("/registered",function(req,res){
-	res.end(registered());
+	res.render("registered",{component:registered()});
 })//注册
 
 app.get("/cancelLogin",function(req,res){
 	req.session.status = false;
 	res.redirect('./');
-})//退出登录
+})//退出登录*/
 
 app.post("/process_login",urlencodedParser,function(req,res){
 	MongoClient.connect('mongodb://localhost:27017/runoob', function(err, db) {

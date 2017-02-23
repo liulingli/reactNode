@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="public/js/react.js"></script>
+	<script src="public/js/react-dom.js"></script>
+	<script src="public/js/browser.min.js"></script>
+</head>
+<body>
+
+<div id="content"><%-component%></div>
+
+<script src="public/js/jquery.min.js"></script>
+<script type="text/babel" >
+var Content = React.createClass({
+	render:function(){
+		return (
+			React.createElement("form",{action:"process_login",method:"POST"},
+				React.createElement("label",{},
+					React.createElement("span",{},"用户名："),
+					React.createElement("input",{type:"text",name:"name"},null)
+				),
+				React.createElement("label",{},
+					React.createElement("span",{},"密码："),
+					React.createElement("input",{type:"password",name:"password"},null)
+				),
+				React.createElement("button",{},"登录")
+			)
+		)
+	}
+})
+ReactDOM.render(
+	<div>
+		<Content />
+	</div>,
+	document.getElementById("content")
+)
+</script>
+
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="public/js/react.js"></script>
+	<script src="public/js/react-dom.js"></script>
+	<script src="public/js/browser.min.js"></script>
+</head>
+<body>
+
+<div id="content"><%-component%></div>
+
+<script src="public/js/jquery.min.js"></script>
+<script type="text/babel" >
+var Content = React.createClass({
+	handClick:function(){
+		alert(1)
+	},
+	render:function(){
+		return (
+			React.createElement("div",{},
+				React.createElement("div",{id:"status"},this.props.status),
+				React.createElement("a",{href:"registered"},"注册"),
+				React.createElement("a",{href:"login"},"登录"),
+				React.createElement("a",{href:"cancelLogin"},"退出登录"),
+				React.createElement("button",{type:"button",onClick:this.handClick},"弹框")
+			)
+		)
+	}
+})
+
+ReactDOM.render(
+	<div>
+		<Content status="<%- status%>" />
+	</div>,
+	document.getElementById("content")
+)
+</script>
+
+</body>
+</html>
