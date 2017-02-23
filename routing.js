@@ -1,17 +1,18 @@
 var express = require("express"),
 	React = require('react'),
 	babel = require("babel-register"),
-
 	login = require("./reactModel/login.js"),//登录模块
 	index = require("./reactModel/index.js"),//首页模块
+	form = require("./reactModel/form.js"),//首页模块
 	registered = require("./reactModel/registered.js"),//注册模块
-
 	MongoClient = require("mongodb").MongoClient,
 	bodyParser = require('body-parser'),
+	fs = require("fs"),
 	expressHogan = require('express-hogan.js'),
     cookieParser = require('cookie-parser'),
 	ejs = require('ejs'),
-    session = require('express-session');
+    session = require('express-session'),
+    multer  = require('multer');
 
 var app = express();
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
@@ -21,6 +22,8 @@ app.engine('.html',ejs.__express);//使用ejs解析html模板
 app.set('view engine', 'html');
 
 app.use('/public',express.static(__dirname + '/public'));//静态文件路径设置
+
+app.use(multer({ dest: '/tmp/'}).array('avatar'));
 
 app.use(cookieParser());
 app.use(session({
@@ -32,7 +35,7 @@ app.use(session({
 
 
 app.get("/",function(req,res){
-	var statusJson = {status:!!req.session.status} 
+	var statusJson = {status:!!req.session.status}
 	res.render("index",{component:index(statusJson),status:statusJson.status?"登录":"未登录"});
 })//首页
 
@@ -44,10 +47,37 @@ app.get("/registered",function(req,res){
 	res.render("registered",{component:registered()});
 })//注册
 
+app.get("/form",function(req,res){
+	res.render("form",{component:form()})
+})//表单提交
+
+
 app.get("/cancelLogin",function(req,res){
 	req.session.status = false;
 	res.redirect('./');
 })//退出登录*/
+
+app.post("/form_file",urlencodedParser,function(req,res){
+	console.log(req.files[0])
+
+	var des_file = __dirname + "/" + req.files[0].originalname;
+    fs.readFile( req.files[0].path, function (err, data) {
+        fs.writeFile(des_file, data, function (err) {
+         if( err ){
+              console.log( err );
+         }else{
+               response = {
+                   message:'File uploaded successfully', 
+                   filename:req.files[0].originalname
+              };
+          }
+          console.log( response );
+          res.end( JSON.stringify( response ) );
+       });
+    });
+
+	res.end(req.body.avatar)
+})//文件提交表单
 
 app.post("/process_login",urlencodedParser,function(req,res){
 	MongoClient.connect('mongodb://localhost:27017/runoob', function(err, db) {

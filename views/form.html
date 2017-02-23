@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="public/js/react.js"></script>
+	<script src="public/js/react-dom.js"></script>
+	<script src="public/js/browser.min.js"></script>
+</head>
+<body>
+
+<div id="content"><%-component%></div>
+
+<script src="public/js/jquery.min.js"></script>
+<script type="text/babel" >
+var Content = React.createClass({
+			render:function(){
+				return (
+					React.createElement("form",{action:"form_file",method:"POST",encType:"multipart/form-data"},
+						React.createElement("label",{},
+							React.createElement("span",{},"名称："),
+							React.createElement("input",{type:"text",name:"name"},null)
+						),
+						React.createElement("label",{},
+							React.createElement("span",{},"头像："),
+							React.createElement("input",{type:"file",name:"avatar"},null)
+						),
+						React.createElement("button",{},"提交")
+					)
+				)
+			}
+		})
+ReactDOM.render(
+	<div>
+		<Content />
+	</div>,
+	document.getElementById("content")
+)
+</script>
+
+</body>
+</html>
