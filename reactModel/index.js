@@ -26,6 +26,7 @@ var Content = React.createClass({
 				React.createElement("div",{id:"status",onClick:this.handClick},this.props.status),
 				React.createElement("a",{href:"registered"},"注册"),
 				React.createElement("a",{href:"login"},"登录"),
+				React.createElement("a",{href:"form"},"头像设置"),
 				React.createElement("a",{href:"cancelLogin"},"退出登录"),
 				React.createElement("button",{type:"button"},"弹框")
 			)
@@ -35,8 +36,7 @@ var Content = React.createClass({
 
 
 module.exports = function(jsonData){
-	var html = jsonData.status?"已登录":"未登录";
 	return React.renderToStaticMarkup(
-		React.createElement(Content,{status:html})
+		React.createElement(Content,{status:jsonData})
 	);
 }

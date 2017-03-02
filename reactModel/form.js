@@ -3,9 +3,8 @@ var Content = React.createClass({
 			render:function(){
 				return (
 					React.createElement("form",{action:"form_file",method:"POST",encType:"multipart/form-data"},
-						React.createElement("label",{},
-							React.createElement("span",{},"名称："),
-							React.createElement("input",{type:"text",name:"name"},null)
+						React.createElement("div",{className:"imgBox"},
+							React.createElement("img",{src:this.props.imgSrc})
 						),
 						React.createElement("label",{},
 							React.createElement("span",{},"头像："),
@@ -17,8 +16,8 @@ var Content = React.createClass({
 			}
 		})
 
-module.exports = function(){
+module.exports = function(avatar){
 	return React.renderToStaticMarkup(
-				React.createElement(Content)
+				React.createElement(Content,{imgSrc:avatar})
 			)
 }

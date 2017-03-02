@@ -15,7 +15,7 @@ var express = require("express"),
     multer  = require('multer');
 
 var app = express(),mongdbUrl = 'mongodb://localhost:27017/runoob';
-var urlencodedParser = bodyParser.urlencoded({ extended: false });
+
 
 app.engine('.html',ejs.__express);//使用ejs解析html模板
 
@@ -23,7 +23,7 @@ app.set('view engine', 'html');
 
 app.use('/public',express.static(__dirname + '/public'));//静态文件路径设置
 
-app.use(multer({ dest: 'public/upload/'}).array('avatar'));
+//app.use(multer({ dest: 'public/upload/'}).array('avatar'));//图片保存路径
 
 app.use(cookieParser());
 app.use(session({
@@ -34,10 +34,21 @@ app.use(session({
 }));//session设置
 
 
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/upload/');
+    },
+    filename: function (req, file, cb) {
+    	var suffixName = file.originalname.split(".")
+        cb(null, "img" + Date.now() + "." + suffixName[suffixName.length-1]);  
+    }
+});
+app.use(multer({storage:storage}).array('avatar'))//图片保存
+app.use(bodyParser.urlencoded({ extended: false }));
+
 app.get("/",function(req,res){
-	var statusJson = {status:req.session.status?req.session.status:false}
-	console.log(req.session.status)
-	res.render("index",{component:index(!!req.session.status),status:req.session.status});
+	var statusJson = req.session.status?req.session.status:"未登录";
+	res.render("index",{component:index(statusJson),status:statusJson});
 })//首页
 
 app.get("/login",function(req,res){
@@ -49,8 +60,24 @@ app.get("/registered",function(req,res){
 })//注册
 
 app.get("/form",function(req,res){
-	res.render("form",{component:form()})
-})//表单提交
+	if(req.session.status){
+		MongoClient.connect(mongdbUrl,function(err,db){
+			var collection = db.collection("cool");
+			collection.find({"first_name":req.session.status}).toArray(function(err,data){
+				if(err){
+					console.log(err)
+				}else{
+					db.close();
+					var avatar = data[0].avatar && data[0].avatar != "null" ?data[0].avatar:"public/images/portrait.jpg";
+					console.log(data[0].avatar == null,data[0].avatar == "null")
+					res.render("form",{component:form(avatar),avatar:avatar})
+				}
+			})
+		})
+	}else{
+		res.redirect('./login');
+	}
+})//表单提交页面
 
 
 app.get("/cancelLogin",function(req,res){
@@ -58,36 +85,40 @@ app.get("/cancelLogin",function(req,res){
 	res.redirect('./');
 })//退出登录*/
 
-app.post("/form_file",urlencodedParser,function(req,res){
-    console.log(req.files[0]);
+app.post("/form_file",function(req,res){
+    MongoClient.connect(mongdbUrl,function(err,db){
+    	var collection = db.collection("cool");
+    	collection.find({"first_name":req.session.status}).toArray(function(err,data){
+    		var history = data[0].avatar;
+			collection.update({"first_name":data[0].first_name}, {$set:{"avatar":req.files[0].path}}, function(err,result){
+				if(err){
+					console.log(err);
+				}else{
+					if(history){
+						fs.unlink(history,function(err){
+							if(err){console.log(err)}
+						})
+					}
+					db.close();
+    				res.redirect("./")
+				}
+			})
+    	})
+    })
+})//文件提交表单(头像)
 
-	var des_file = __dirname + "/" + req.files[0].originalname;
-
-    fs.readFile(req.files[0].path, function (err, data) {
-        fs.writeFile(des_file, data, function (err) {
-         	if(err){
-            	console.log(err);
-         	}else{
-               /* MongoClient.connect(mongdbUrl,function(err,db){
-                	var collection = db.collection("cool");
-                	//collection
-                })*/
-          	}
-          	res.end("a");
-       });
-    });
-
-})//文件提交表单
-
-app.post("/process_login",urlencodedParser,function(req,res){
+app.post("/process_login",function(req,res){
 	MongoClient.connect(mongdbUrl, function(err, db) {
 		var collection = db.collection('cool');
 		collection.find({"first_name":req.body.name}).toArray(function(err,data){
 			if(!data.length){
+				db.close();
 				res.end("该账户未注册")
 			}else if(data[0].last_password != req.body.password){
+				db.close();
 				res.end('密码错误');
 			}else{
+				db.close();
 				req.session.status = req.body.name;
 				res.redirect('./');
 			}
@@ -95,10 +126,11 @@ app.post("/process_login",urlencodedParser,function(req,res){
 	})
 })//登录表单
 
-app.post("/process_registered",urlencodedParser,function(req,res){
+app.post("/process_registered",function(req,res){
 	var response = {
        first_name:req.body.name,
-       last_password:req.body.password
+       last_password:req.body.password,
+       avatar:"null"
     };
     MongoClient.connect(mongdbUrl, function(err, db) {
 	    var collection = db.collection('cool');
