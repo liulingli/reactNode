@@ -22,13 +22,12 @@ For.propTypes = {
 var Content = React.createClass({
 	render:function(){
 		return (
-			React.createElement("div",{},
-				React.createElement("div",{id:"status",onClick:this.handClick},this.props.status),
-				React.createElement("a",{href:"registered"},"注册"),
-				React.createElement("a",{href:"login"},"登录"),
-				React.createElement("a",{href:"form"},"头像设置"),
-				React.createElement("a",{href:"cancelLogin"},"退出登录"),
-				React.createElement("button",{type:"button"},"弹框")
+			React.createElement("div",{className:"homeBox"},
+				React.createElement("div",{id:"status",className:"home_status",onClick:this.handClick},this.props.status),
+				React.createElement("a",{href:"registered",className:"home_registered"},"注册"),
+				React.createElement("a",{href:"login",className:"home_login"},"登录"),
+				React.createElement("a",{href:"form",className:"home_avatar"},"头像设置"),
+				React.createElement("a",{href:"cancelLogin",className:"outLogin"},"退出登录")
 			)
 		)
 	}

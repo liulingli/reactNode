@@ -6,6 +6,7 @@
 	<script src="public/js/react.js"></script>
 	<script src="public/js/react-dom.js"></script>
 	<script src="public/js/browser.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="public/css/style.css">
 </head>
 <body>
 
@@ -13,24 +14,45 @@
 <script src="public/js/jquery.min.js"></script>
 <script type="text/babel" >
 var Content = React.createClass({
+			getInitialState : function () {
+			    return {
+			      imgSrc : "<%- avatar%>"
+			    };
+			},
+			inputChange:function(){
+				var file    = this.refs.fileInput.files[0];
+				var reader  = new FileReader();
+				var _self = this;
+				reader.addEventListener("load", function () {
+					_self.setState({imgSrc:reader.result});
+				}, false);
+
+				if (file) {
+				   reader.readAsDataURL(file);
+				}
+			},
 			render:function(){
 				return (
-					React.createElement("form",{action:"form_file",method:"POST",encType:"multipart/form-data"},
-						React.createElement("div",{className:"imgBox"},
-							React.createElement("img",{src:this.props.imgSrc})
-						),
-						React.createElement("label",{},
-							React.createElement("span",{},"头像："),
-							React.createElement("input",{type:"file",name:"avatar"},null)
-						),
-						React.createElement("button",{},"提交")
+					React.createElement("div",{className:"avatarBox"},
+						React.createElement("form",{action:"form_file",method:"POST",encType:"multipart/form-data"},
+							React.createElement("div",{className:"imgBox"},
+								React.createElement("img",{src:this.state.imgSrc}),
+								React.createElement("span",{},"")
+							),
+							React.createElement("label",{className:"uploadBox"},
+								React.createElement("span",{},"头像："),
+								React.createElement("input",{type:"file",ref:"fileInput",onChange:this.inputChange,name:"avatar"},null),
+								React.createElement("button",{type:"button"},"上传头像")
+							),
+							React.createElement("button",{className:"avatarSubmit"},"提交")
+						)
 					)
 				)
 			}
 		})
 ReactDOM.render(
 	<div>
-		<Content imgSrc="<%- avatar%>" />
+		<Content />
 	</div>,
 	document.getElementById("content")
 )

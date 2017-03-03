@@ -6,6 +6,7 @@
 	<script src="public/js/react.js"></script>
 	<script src="public/js/react-dom.js"></script>
 	<script src="public/js/browser.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="public/css/style.css">
 </head>
 <body>
 
@@ -14,18 +15,14 @@
 <script src="public/js/jquery.min.js"></script>
 <script type="text/babel" >
 var Content = React.createClass({
-	handClick:function(){
-		alert(1)
-	},
 	render:function(){
 		return (
-			React.createElement("div",{},
-				React.createElement("div",{id:"status"},this.props.status),
-				React.createElement("a",{href:"registered"},"注册"),
-				React.createElement("a",{href:"login"},"登录"),
-				React.createElement("a",{href:"form"},"头像设置"),
-				React.createElement("a",{href:"cancelLogin"},"退出登录"),
-				React.createElement("button",{type:"button",onClick:this.handClick},"弹框")
+			React.createElement("div",{className:"homeBox"},
+				React.createElement("div",{id:"status",className:"home_status"},this.props.status),
+				React.createElement("a",{href:"registered",className:"home_registered"},"注册"),
+				React.createElement("a",{href:"login",className:"home_login"},"登录"),
+				React.createElement("a",{href:"form",className:"home_avatar"},"头像设置"),
+				React.createElement("a",{href:"cancelLogin",className:"outLogin"},"退出登录")
 			)
 		)
 	}

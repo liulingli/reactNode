@@ -55,6 +55,11 @@ app.get("/login",function(req,res){
 	res.render("login",{component:login()});
 })//登录
 
+app.get("/login",function(req,res){
+	res.render("login",{component:login()});
+})//登录
+
+
 app.get("/registered",function(req,res){
 	res.render("registered",{component:registered()});
 })//注册
@@ -69,7 +74,6 @@ app.get("/form",function(req,res){
 				}else{
 					db.close();
 					var avatar = data[0].avatar && data[0].avatar != "null" ?data[0].avatar:"public/images/portrait.jpg";
-					console.log(data[0].avatar == null,data[0].avatar == "null")
 					res.render("form",{component:form(avatar),avatar:avatar})
 				}
 			})
@@ -78,7 +82,6 @@ app.get("/form",function(req,res){
 		res.redirect('./login');
 	}
 })//表单提交页面
-
 
 app.get("/cancelLogin",function(req,res){
 	req.session.status = false;
@@ -90,7 +93,8 @@ app.post("/form_file",function(req,res){
     	var collection = db.collection("cool");
     	collection.find({"first_name":req.session.status}).toArray(function(err,data){
     		var history = data[0].avatar;
-			collection.update({"first_name":data[0].first_name}, {$set:{"avatar":req.files[0].path}}, function(err,result){
+    		var imgPath = req.files[0].path.split("\\").join("/")
+			collection.update({"first_name":data[0].first_name}, {$set:{"avatar":imgPath}}, function(err,result){
 				if(err){
 					console.log(err);
 				}else{

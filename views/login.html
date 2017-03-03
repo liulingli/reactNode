@@ -6,6 +6,7 @@
 	<script src="public/js/react.js"></script>
 	<script src="public/js/react-dom.js"></script>
 	<script src="public/js/browser.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="public/css/style.css">
 </head>
 <body>
 
@@ -14,22 +15,24 @@
 <script src="public/js/jquery.min.js"></script>
 <script type="text/babel" >
 var Content = React.createClass({
-	render:function(){
-		return (
-			React.createElement("form",{action:"process_login",method:"POST"},
-				React.createElement("label",{},
-					React.createElement("span",{},"用户名："),
-					React.createElement("input",{type:"text",name:"name"},null)
-				),
-				React.createElement("label",{},
-					React.createElement("span",{},"密码："),
-					React.createElement("input",{type:"password",name:"password"},null)
-				),
-				React.createElement("button",{},"登录")
-			)
-		)
-	}
-})
+			render:function(){
+				return (
+					React.createElement("div",{className:"homeBox"},
+						React.createElement("form",{action:"process_login",method:"POST"},
+							React.createElement("label",{className:"login_name"},
+								React.createElement("span",{},"用户名："),
+								React.createElement("input",{type:"text",name:"name"},null)
+							),
+							React.createElement("label",{className:"login_password"},
+								React.createElement("span",{},"密码："),
+								React.createElement("input",{type:"password",name:"password"},null)
+							),
+							React.createElement("button",{className:"login_btn"},"登录")
+						)
+					)
+				)
+			}
+		})
 ReactDOM.render(
 	<div>
 		<Content />
