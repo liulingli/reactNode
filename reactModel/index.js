@@ -27,6 +27,7 @@ var Content = React.createClass({
 				React.createElement("a",{href:"registered",className:"home_registered"},"注册"),
 				React.createElement("a",{href:"login",className:"home_login"},"登录"),
 				React.createElement("a",{href:"form",className:"home_avatar"},"头像设置"),
+				React.createElement("a",{href:"chatroom",className:"home_avatar"},"聊天室"),
 				React.createElement("a",{href:"cancelLogin",className:"outLogin"},"退出登录")
 			)
 		)

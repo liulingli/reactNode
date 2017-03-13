@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="public/js/react.js"></script>
+	<script src="public/js/react-dom.js"></script>
+	<script src="public/js/browser.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="public/css/style.css">
+</head>
+<body>
+
+<div id="content"><%-component%></div>
+
+<script src="public/js/jquery.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+
+
+<script type="text/babel">
+var socket = io.connect("");
+
+
+var Content = React.createClass({
+	getInitialState:function(){
+		this.update();
+		return {
+			text:"123",
+			child:[{name:"test",text:"test"}]
+		}
+	},
+	update:function(){
+		var _self = this;
+		socket.on("news",function(data){
+			_self.state.child.push(data);
+			_self.setState({child:_self.state.child})
+		});
+	},
+	setData:function(event){
+		this.setState({text:event.target.value})
+	},
+	emitThing:function(){
+		socket.emit("addNews",{name:this.props.name,text:this.state.text});
+	},
+	render:function(){
+		return (
+			React.createElement("div",{className:"chatroomBox"},
+				React.createElement("div",{id:"status",className:"chatroomTop"},
+					React.createElement("ul",{},
+						this.state.child.map(function(todo,index){
+							return React.createElement("li",{key:index},todo.text);
+						})
+					)
+				),
+				React.createElement("div",{className:"chatroomBottom"},
+					React.createElement("textarea",{className:"textContent",onChange:this.setData,defaultValue:this.state.text}),
+					React.createElement("button",{type:"button",onClick:this.emitThing},"提交")
+				)
+			)
+		)
+	}
+})
+
+ReactDOM.render(
+	<div>
+		<Content name="<%- name%>" />
+	</div>,
+	document.getElementById("content")
+)
+</script>
+</body>
+</html>

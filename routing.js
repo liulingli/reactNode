@@ -5,6 +5,7 @@ var express = require("express"),
 	index = require("./reactModel/index.js"),//首页模块
 	form = require("./reactModel/form.js"),//首页模块
 	registered = require("./reactModel/registered.js"),//注册模块
+	chatroom = require("./reactModel/chatroom.js"),//聊天室模块
 	MongoClient = require("mongodb").MongoClient,
 	bodyParser = require('body-parser'),
 	fs = require("fs"),
@@ -33,7 +34,6 @@ app.use(session({
     saveUninitialized: true
 }));//session设置
 
-
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'public/upload/');
@@ -43,6 +43,7 @@ var storage = multer.diskStorage({
         cb(null, "img" + Date.now() + "." + suffixName[suffixName.length-1]);  
     }
 });
+
 app.use(multer({storage:storage}).array('avatar'))//图片保存
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -59,10 +60,16 @@ app.get("/login",function(req,res){
 	res.render("login",{component:login()});
 })//登录
 
-
 app.get("/registered",function(req,res){
 	res.render("registered",{component:registered()});
 })//注册
+
+app.get("/chatroom",function(req,res){
+	if(!req.session.status){
+		res.redirect('./login');
+	}
+	res.render("chatroom",{component:chatroom(),name:req.session.status});
+})//聊天室
 
 app.get("/form",function(req,res){
 	if(req.session.status){

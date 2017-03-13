@@ -6,7 +6,8 @@ input:focus,button:focus{
 button{
 	cursor: pointer;
 }
-.homeBox{
+li{list-style: none;}
+.homeBox,.chatroomBox{
 	width: 400px;
 	min-height: 200px;
 	margin:250px auto 0;
@@ -131,3 +132,44 @@ button{
 	border:none;
 }
 .avatarSubmit{}
+.chatroomBox{
+	margin:86px auto 0;
+	width: 800px;
+	height: 800px;
+}
+.chatroomTop{
+	height: 650px;
+	border-bottom: 1px solid #fe8534;
+	font-size: 20px;
+}
+.chatroomTop li{
+	text-align: left;
+	width: 760px;
+	margin: 5px auto;
+}
+.chatroomBottom{
+	height: 150px;
+}
+.chatroomBottom textarea{
+	width: 498px;
+	height: 110px;
+	border:none;
+	padding:10px;
+	margin:13px 0 0 15px;
+	color: #fff;
+	font-size: 23px;
+	background: #fe8534;
+	float: left;
+	border-radius: 10px;
+}
+.chatroomBottom button{
+	width: 224px;
+	height: 130px;
+	background: #fe8534;
+	border:none;
+	color: #fff;
+	float: right;
+	margin:13px 10px 0 0;
+	border-radius: 10px;
+	font-size: 30px;
+}
