@@ -146,6 +146,8 @@ li{list-style: none;}
 	text-align: left;
 	width: 760px;
 	margin: 5px auto;
+	overflow: hidden;
+	margin-bottom: 10px;
 }
 .chatroomBottom{
 	height: 150px;
@@ -173,3 +175,33 @@ li{list-style: none;}
 	border-radius: 10px;
 	font-size: 30px;
 }
+.chatImgBox{
+	float: left;
+	width: 40px;
+	height: 40px;
+	border:1px solid #fe8534;
+	overflow: hidden;
+	border-radius: 40px;
+	margin-right: 10px;
+}
+.chatImgBox img{
+	width: 40px;
+	height: 40px;
+}
+.chatRightBox{
+	float: left;
+}
+.chatName{
+	font-size: 16px;
+	color: #666;
+	margin-bottom: 6px;
+}
+.chatText{
+	width: 400px;
+	background:#ffcdac;
+	padding:6px 10px;
+	border-radius: 6px;
+	color: #333;
+}
+
+

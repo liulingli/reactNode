@@ -1,4 +1,5 @@
-var routing = require("./routing.js");
+var routing = require("./routing.js"),
+	MongoClient = require("mongodb").MongoClient;
 
 var app = routing;
 
@@ -12,6 +13,19 @@ io.on('connection', function (socket) {
   //socket.emit('news', { hello: 'world' });
   socket.on('addNews', function (data) {
     //console.log(data);
-    io.sockets.emit('news', data);
+    var newData = data;
+    MongoClient.connect("mongodb://localhost:27017/runoob",function(err,db){
+		var collection = db.collection("cool");
+	    collection.find({"first_name":data.name}).toArray(function(err,data){
+			if(err){
+				console.log(err)
+			}else{
+				db.close();
+				newData.avatar = data[0].avatar && data[0].avatar != "null" ?data[0].avatar:"public/images/portrait.jpg";
+				io.sockets.emit('news', newData);
+			}
+		})
+    })
+    
   });
 });//测试实时对话

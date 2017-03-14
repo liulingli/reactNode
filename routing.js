@@ -29,7 +29,7 @@ app.use('/public',express.static(__dirname + '/public'));//静态文件路径设
 app.use(cookieParser());
 app.use(session({
     secret: 'hubwiz app', //secret的值建议使用随机字符串
-    cookie: {maxAge: 10000*60}, // 过期时间（毫秒）
+    cookie: {maxAge: 1000000*60}, // 过期时间（毫秒）
     resave:true,
     saveUninitialized: true
 }));//session设置

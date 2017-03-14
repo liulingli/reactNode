@@ -25,7 +25,7 @@ var Content = React.createClass({
 		this.update();
 		return {
 			text:"",
-			child:[{name:"test",text:"test"}]
+			child:[]
 		}
 	},
 	update:function(){
@@ -36,9 +36,10 @@ var Content = React.createClass({
 		});
 	},
 	setData:function(event){
-		this.setState({text:event.target.value})
+		this.setState({text:event.target.value});
 	},
 	emitThing:function(){
+		this.setState({text:""});
 		socket.emit("addNews",{name:this.props.name,text:this.state.text});
 	},
 	render:function(){
@@ -47,7 +48,17 @@ var Content = React.createClass({
 				React.createElement("div",{id:"status",className:"chatroomTop"},
 					React.createElement("ul",{},
 						this.state.child.map(function(todo,index){
-							return React.createElement("li",{key:index},todo.text);
+							return (
+								React.createElement("li",{key:index},
+									React.createElement("div",{className:"chatImgBox"},
+										React.createElement("img",{"src":todo.avatar},null)
+									),
+									React.createElement("div",{className:"chatRightBox"},
+										React.createElement("div",{className:"chatName"},todo.name),
+										React.createElement("div",{className:"chatText"},todo.text)
+									)
+								)
+							)
 						})
 					)
 				),
