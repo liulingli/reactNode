@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="public/js/react.js"></script>
+	<script src="public/js/react-dom.js"></script>
+	<script src="public/js/browser.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="public/css/style.css">
+</head>
+<body>
+
+<div id="content"><%-component%></div>
+
+<script src="public/js/jquery.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+
+<script type="text/babel" >
+var Content = React.createClass({
+	findFriend:function(){
+		$.ajax({
+			type:"GET",
+			url:"http://localhost:1024/findFriend",
+			dataType:"json",
+			data:{val:2},
+			success:function(data){
+				console.log(data)
+			}
+		})
+	},
+	render:function(){
+		return (
+			React.createElement("div",{className:"friendBox"},
+				React.createElement("div",{className:"friendTop"},
+					React.createElement("input",{},null),
+					React.createElement("button",{type:"button",onClick:this.findFriend,id:"friend_find"},"查找好友")
+				)
+			)
+		)
+	}
+})
+
+ReactDOM.render(
+	<div>
+		<Content />
+	</div>,
+	document.getElementById("content")
+)
+</script>
+</body>
+</html>

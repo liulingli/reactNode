@@ -6,6 +6,8 @@ var express = require("express"),
 	form = require("./reactModel/form.js"),//首页模块
 	registered = require("./reactModel/registered.js"),//注册模块
 	chatroom = require("./reactModel/chatroom.js"),//聊天室模块
+	friend = require("./reactModel/friend.js"),//好友列表模块
+	friendAdd = require("./reactModel/friendAdd.js"),//添加模块
 	MongoClient = require("mongodb").MongoClient,
 	bodyParser = require('body-parser'),
 	fs = require("fs"),
@@ -70,6 +72,36 @@ app.get("/chatroom",function(req,res){
 	}
 	res.render("chatroom",{component:chatroom(),name:req.session.status});
 })//聊天室
+
+app.get("/friend",function(req,res){
+	if(!req.session.status){
+		res.redirect('./login');
+	}
+	res.render("friend",{component:friend(),name:req.session.status});
+})//好友列表
+
+app.get("/addFriend",function(req,res){
+	if(!req.session.status){
+		res.redirect('./login');
+	}
+	res.render("friendAdd",{component:friendAdd(),name:req.session.status});
+})//查找好友
+
+app.get("/findFriend",function(req,res){
+	console.log(req.query)
+	MongoClient.connect(mongdbUrl,function(err,db){
+		var collection = db.collection("cool");
+		collection.find({"first_name":{$ne:null},$or:[{"first_name":req.query.val},{"id":req.query.val-0}]}).toArray(function(err,data){
+			if(err){
+				console.log(err)
+			}else{
+				db.close();
+				res.end(JSON.stringify(data));
+			}
+		});
+	})
+})//查询接口
+
 
 app.get("/form",function(req,res){
 	if(req.session.status){
@@ -145,15 +177,19 @@ app.post("/process_registered",function(req,res){
     };
     MongoClient.connect(mongdbUrl, function(err, db) {
 	    var collection = db.collection('cool');
+
 	    collection.find({"first_name":req.body.name}).toArray(function(err,docs){
 	    	if(docs.length){
 	    		res.send("该账号已被注册");
 	    		db.close();
-	    	}else{ 
-	    		collection.insertMany([response], function(err, result) {
-					res.redirect('./login');
-					db.close();
-			    });
+	    	}else{
+	    		collection.findAndModify({name:"uid"},[],{$inc:{id:1}},{new:true},function(err,result){
+	    			response.id = result.value.id
+	    			collection.insertMany([response], function(err, result) {
+						res.redirect('./login');
+						db.close();
+				    });
+	    		})
 	    	}
 	    })
 	});
