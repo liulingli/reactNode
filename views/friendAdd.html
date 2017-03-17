@@ -17,33 +17,77 @@
 
 <script type="text/babel" >
 var Content = React.createClass({
+	getInitialState:function(){
+		return {
+			friendList:[]
+		}
+	},
+	showPopUp:function(){
+		console.log(this.refs)
+		this.refs.popUp.style.display = "block";
+	},//显示弹出框
+	verification:function(){
+
+		console.log(this.refs.verificationValue.value)
+		//var = this.state.friendList;
+
+
+	},//发送验证消息
 	findFriend:function(){
+		var _self = this;
 		$.ajax({
 			type:"GET",
 			url:"http://localhost:1024/findFriend",
 			dataType:"json",
-			data:{val:2},
+			data:{val:_self.refs.friendName.value},
 			success:function(data){
-				console.log(data)
+				_self.state.friendList = data;
+				_self.setState({friendList:_self.state.friendList});
 			}
 		})
-	},
+	},//查找好友
 	render:function(){
+		var _self = this;
 		return (
-			React.createElement("div",{className:"friendBox"},
-				React.createElement("div",{className:"friendTop"},
-					React.createElement("input",{},null),
-					React.createElement("button",{type:"button",onClick:this.findFriend,id:"friend_find"},"查找好友")
+			React.createElement("div",{},
+				React.createElement("div",{className:"friendBox"},
+					React.createElement("div",{className:"friendTop"},
+						React.createElement("input",{ref:"friendName"},null),
+						React.createElement("button",{type:"button",onClick:this.findFriend,id:"friend_find"},"查找好友")
+					),
+					React.createElement("ul",{className:"friendAddList"},
+						this.state.friendList.map(function(todo,index){
+							return (
+								React.createElement("li",{key:index},
+									React.createElement("div",{},
+										React.createElement("img",{src:todo.avatar},null)
+									),
+									React.createElement("div",{},todo.first_name),
+									React.createElement("button",{type:"button",onClick:_self.showPopUp},"添加好友")
+								)
+							)
+						})
+					)
+				),
+				React.createElement("div",{className:"popUpBox",ref:"popUp"},
+					React.createElement("div",{className:"popUpTitle"},
+						React.createElement("span",{},"验证消息"),
+						React.createElement("span",{className:"clone"})
+					),
+					React.createElement("div",{},
+						React.createElement("input",{type:"text",ref:"verificationValue"},null),
+						React.createElement("button",{type:"button",onClick:this.verification},"提交")
+					)
 				)
 			)
 		)
 	}
 })
 
+
+
 ReactDOM.render(
-	<div>
-		<Content />
-	</div>,
+	<Content />,
 	document.getElementById("content")
 )
 </script>

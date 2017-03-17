@@ -1,4 +1,5 @@
 var routing = require("./routing.js"),
+	interface = require("./interface.js"),
 	MongoClient = require("mongodb").MongoClient;
 
 var app = routing;
