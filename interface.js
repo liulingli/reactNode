@@ -31,27 +31,39 @@ app.get("/findFriend",function(req,res){
 })//好友添加查询接口
 
 app.get("/verification",function(req,res){
-	console.log(req.query)
+	if(req.query.first_name == req.session.status){
+		res.end("3");
+		return;
+	}
 	MongoClient.connect(mongdbUrl,function(err,db){
 		var collection = db.collection("cool");
 		collection.find({"first_name":req.query.first_name}).toArray(function(err,data){
 			if(data[0].news){
-				var newsData = data[0].news.push(req.query.news)
+				var newsData = data[0].news;
+				newsData.push(req.query)
 			}else{
 				var newsData = [];
-				newsData.push(req.query.news);
+				newsData.push(req.query);
 			}
+			for(var i in data[0].news){
+				if( data[0].news[i].first_name == req.query.first_name ){
+					res.end("2")
+					db.close();
+					return;
+				}
+			}//请求已存在
 			collection.update({"first_name":req.query.first_name},{$set:{"news":newsData}},function(err,result){
 				if(err){
 					console.log(err)
 				}else{
-					res.end("成功")
+					console.log("200")
+					res.end("true")
 				}
 				db.close();
 			})
 		})
 	})
-})
+})//验证消息
 
 app.get("/cancelLogin",function(req,res){
 	req.session.status = false;

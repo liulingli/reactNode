@@ -22,15 +22,26 @@ var Content = React.createClass({
 			friendList:[]
 		}
 	},
-	showPopUp:function(){
-		console.log(this.refs)
+	showPopUp:function(event){
 		this.refs.popUp.style.display = "block";
+		this.setState({index:event.target.dataset.index})
 	},//显示弹出框
 	verification:function(){
+		var _self = this;
+		var thisData = this.state.friendList[this.state.index];
+		thisData.value = this.refs.verificationValue.value;
 
-		console.log(this.refs.verificationValue.value)
-		//var = this.state.friendList;
-
+		$.ajax({
+			type:"GET",
+			url:"http://localhost:1024/verification",
+			dataType:"json",
+			data:thisData,
+			success:function(data){
+				console.log(data)
+				_self.refs.verificationValue.value = "";
+				_self.refs.popUp.style.display = "none";
+			}
+		})
 
 	},//发送验证消息
 	findFriend:function(){
@@ -63,7 +74,7 @@ var Content = React.createClass({
 										React.createElement("img",{src:todo.avatar},null)
 									),
 									React.createElement("div",{},todo.first_name),
-									React.createElement("button",{type:"button",onClick:_self.showPopUp},"添加好友")
+									React.createElement("button",{type:"button","data-index":index,onClick:_self.showPopUp},"添加好友")
 								)
 							)
 						})
