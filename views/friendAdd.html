@@ -35,7 +35,7 @@ var Content = React.createClass({
 			type:"GET",
 			url:"http://localhost:1024/verification",
 			dataType:"json",
-			data:thisData,
+			data:thisData, 
 			success:function(data){
 				console.log(data)
 				_self.refs.verificationValue.value = "";
