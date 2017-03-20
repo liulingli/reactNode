@@ -28,7 +28,7 @@ app.get("/findFriend",function(req,res){
 			}
 		});
 	})
-})//好友添加查询接口
+})//好友查询接口
 
 app.get("/verification",function(req,res){
 	if(req.query.first_name == req.session.status){
@@ -37,22 +37,27 @@ app.get("/verification",function(req,res){
 	}
 	MongoClient.connect(mongdbUrl,function(err,db){
 		var collection = db.collection("cool");
-		collection.find({"first_name":req.query.first_name}).toArray(function(err,data){
+		collection.find({"first_name":req.query.aims}).toArray(function(err,data){
+			var newData = req.query;
+			newData.first_name = req.session.status;
+			newData.id = req.session.thisData.id
+			newData.avatar = req.session.thisData.avatar
 			if(data[0].news){
 				var newsData = data[0].news;
 				newsData.push(req.query)
 			}else{
 				var newsData = [];
-				newsData.push(req.query);
+				newsData.push(newData);
 			}
 			for(var i in data[0].news){
-				if( data[0].news[i].first_name == req.query.first_name ){
+				if( data[0].news[i].first_name == req.query.aims ){
 					res.end("2")
 					db.close();
 					return;
 				}
-			}//请求已存在
-			collection.update({"first_name":req.query.first_name},{$set:{"news":newsData}},function(err,result){
+			}//请求已存在 req.session.thisData
+			console.log(newsData,req.query.aims)
+			collection.update({"first_name":req.query.aims},{$set:{"news":newsData}},function(err,result){
 				if(err){
 					console.log(err)
 				}else{
@@ -106,6 +111,7 @@ app.post("/process_login",function(req,res){
 			}else{
 				db.close();
 				req.session.status = req.body.name;
+				req.session.thisData = data[0];
 				res.redirect('./');
 			}
 		})
@@ -116,7 +122,7 @@ app.post("/process_registered",function(req,res){
 	var response = {
        first_name:req.body.name,
        last_password:req.body.password,
-       avatar:"null"
+       avatar:"public/images/portrait.jpg"
     };
     MongoClient.connect(mongdbUrl, function(err, db) {
 	    var collection = db.collection('cool');

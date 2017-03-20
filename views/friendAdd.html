@@ -26,24 +26,36 @@ var Content = React.createClass({
 		this.refs.popUp.style.display = "block";
 		this.setState({index:event.target.dataset.index})
 	},//显示弹出框
+	
 	verification:function(){
 		var _self = this;
-		var thisData = this.state.friendList[this.state.index];
+		var thisData = {};
+		thisData.aims = this.state.friendList[this.state.index].first_name;
 		thisData.value = this.refs.verificationValue.value;
-
+		console.log(this.state.friendList,this.state.index,thisData)
 		$.ajax({
 			type:"GET",
 			url:"http://localhost:1024/verification",
 			dataType:"json",
 			data:thisData, 
 			success:function(data){
-				console.log(data)
+				switch(data){
+					case 200:
+						console.log("发送成功");
+						break;
+					case 2:
+						console.log("请求重复");
+						break;
+					case 3:
+						console.log("无法给自己发送请求");
+						break;
+				}
 				_self.refs.verificationValue.value = "";
 				_self.refs.popUp.style.display = "none";
 			}
 		})
-
 	},//发送验证消息
+
 	findFriend:function(){
 		var _self = this;
 		$.ajax({

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="public/js/react.js"></script>
+	<script src="public/js/react-dom.js"></script>
+	<script src="public/js/browser.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="public/css/style.css">
+</head>
+<body>
+
+<div id="content"><%-component%></div>
+<script src="public/js/jquery.min.js"></script>
+<script>
+	console.log("<%-news%>")
+</script>
+<script type="text/babel" >
+var Content = React.createClass({
+			render:function(){
+				return (
+					React.createElement("div",{className:"avatarBox"},
+						React.createElement("ul",{className:"news_list"},
+							this.props.newsList.map(function(todo,index){
+								return (
+									React.createElement("li",{},
+										React.createElement("div",{className:"news_avatar"},
+											React.createElement("img",{src:todo.avatar},null)
+										),
+										React.createElement("div",{className:"news_info"},
+											React.createElement("span",{className:"news_name"},todo.first_name),
+											React.createElement("span",{className:"news_id"},todo.id)
+										),
+										React.createElement("div",{className:"news_verification"},todo.value)
+									)
+								)
+							})
+						)
+					)
+				)
+			}
+		})
+ReactDOM.render(
+	<div>
+		<Content newsList="<%-news%>" />
+	</div>,
+	document.getElementById("content")
+)
+</script>
+
+</body>
+</html>

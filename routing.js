@@ -7,7 +7,8 @@ var express = require("express"),
 	registered = require("./reactModel/registered.js"),//注册模块
 	chatroom = require("./reactModel/chatroom.js"),//聊天室模块
 	friend = require("./reactModel/friend.js"),//好友列表模块
-	friendAdd = require("./reactModel/friendAdd.js"),//添加模块
+	friendAdd = require("./reactModel/friendAdd.js"),//添加好友模块
+	news = require("./reactModel/news.js"),//消息中心模块
 	MongoClient = require("mongodb").MongoClient,
 	bodyParser = require('body-parser'),
 	fs = require("fs"),
@@ -45,7 +46,7 @@ var storage = multer.diskStorage({
     	var suffixName = file.originalname.split(".")
         cb(null, "img" + Date.now() + "." + suffixName[suffixName.length-1]);  
     }
-});
+});//上传图片
 
 app.use(multer({storage:storage}).array('avatar'))//图片保存
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -59,9 +60,19 @@ app.get("/login",function(req,res){
 	res.render("login",{component:login()});
 })//登录
 
-app.get("/login",function(req,res){
-	res.render("login",{component:login()});
-})//登录
+app.get("/news",function(req,res){
+	if(!req.session.status){
+		res.redirect('./login');
+		return;
+	}
+	MongoClient.connect(mongdbUrl,function(err,db){
+		var collection = db.collection("cool");
+		collection.find({"first_name":req.session.status}).toArray(function(err,data){
+			res.render("news",{component:news(data[0].news?data[0].news:[]),news:data[0].news});
+		})
+	})
+	
+})//消息中心
 
 app.get("/registered",function(req,res){
 	res.render("registered",{component:registered()});
