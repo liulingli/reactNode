@@ -56,12 +56,10 @@ app.get("/verification",function(req,res){
 					return;
 				}
 			}//请求已存在 req.session.thisData
-			console.log(newsData,req.query.aims)
 			collection.update({"first_name":req.query.aims},{$set:{"news":newsData}},function(err,result){
 				if(err){
 					console.log(err)
 				}else{
-					console.log("200")
 					res.end("true")
 				}
 				db.close();
@@ -70,10 +68,47 @@ app.get("/verification",function(req,res){
 	})
 })//验证消息
 
-app.get("/cancelLogin",function(req,res){
-	req.session.status = false;
-	res.redirect('./');
-})//退出登录*/
+app.get("/news/agreeFriend",function(req,res){
+	MongoClient.connect(mongdbUrl,function(err,db){
+		var collection = db.collection("cool");
+		
+		//req.session.thisData.id 1
+		//req.query.id 2
+
+		//mike好友列表无，zhang的好友数据是他自己
+
+ 		//collection.findAndModify({"id":req.session.thisData.id,"first_name":{$ne:null}},[],{$pull:{news:newFriendData}},{new:true},function(){
+
+		//})
+
+		collection.find({"id":req.session.thisData.id,"first_name":{$ne:null}}).toArray(function(err,data){//查询zhang数据
+			var newData = data[0].news,newFriend = data[0].friend;
+			console.log(req.query.id,data)
+			collection.find({"id":req.query.id,"first_name":{$ne:null}}).toArray(function(err,data){//查询mike数据
+				console.log(data)
+				newFriend.push({"id":data[0].id,"first_name":data[0].first_name,"avater":data[0].avater})//给zhang
+				var newFriendData = {"id":req.session.thisData.id,"first_name":req.session.thisData.first_name,"avatar":req.session.thisData.avatar}//给mike
+
+				for(var i in newData){
+					if(newData[i].id == req.query.id){
+						newData.splice(i,1)
+						collection.update({"id":req.session.thisData.id,"first_name":{$ne:null}},{$set:{"news":newData,"friend":newFriend}},function(err,data){//修改zhang
+							collection.findAndModify({"id":req.query.id,"first_name":{$ne:null}},[],{$push:{friend:newFriendData}},{new:true},function(err,result){//查询mike
+								console.log("修改成功")
+				    			res.end("200")
+				    			return;
+				    		})//更改请求用户
+						})
+						break;
+					}
+				}
+			})
+			//console.log("返回了404");
+			//res.end("404")
+		})
+
+	})
+})//同意
 
 app.post("/form_file",function(req,res){
     MongoClient.connect(mongdbUrl,function(err,db){
@@ -117,12 +152,14 @@ app.post("/process_login",function(req,res){
 		})
 	})
 })//登录表单
-
+ 
 app.post("/process_registered",function(req,res){
 	var response = {
        first_name:req.body.name,
        last_password:req.body.password,
-       avatar:"public/images/portrait.jpg"
+       avatar:"public/images/portrait.jpg",
+       news:[],
+       friend:[]
     };
     MongoClient.connect(mongdbUrl, function(err, db) {
 	    var collection = db.collection('cool');

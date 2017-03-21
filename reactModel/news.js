@@ -6,7 +6,7 @@ var Content = React.createClass({
 						React.createElement("ul",{className:"news_list"},
 							this.props.newsList.map(function(todo,index){
 								return (
-									React.createElement("li",{},
+									React.createElement("li",{key:index},
 										React.createElement("div",{className:"news_avatar"},
 											React.createElement("img",{src:todo.avatar},null)
 										),

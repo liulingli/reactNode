@@ -68,7 +68,7 @@ app.get("/news",function(req,res){
 	MongoClient.connect(mongdbUrl,function(err,db){
 		var collection = db.collection("cool");
 		collection.find({"first_name":req.session.status}).toArray(function(err,data){
-			res.render("news",{component:news(data[0].news?data[0].news:[]),news:data[0].news});
+			res.render("news",{component:news(data[0].news?data[0].news:[]),news:JSON.stringify(data[0].news)});
 		})
 	})
 	
@@ -84,6 +84,11 @@ app.get("/chatroom",function(req,res){
 	}
 	res.render("chatroom",{component:chatroom(),name:req.session.status});
 })//聊天室
+
+app.get("/cancelLogin",function(req,res){
+	req.session.status = false;
+	res.redirect('./');
+})//退出登录
 
 app.get("/form",function(req,res){
 	if(req.session.status){

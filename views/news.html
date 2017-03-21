@@ -12,18 +12,34 @@
 
 <div id="content"><%-component%></div>
 <script src="public/js/jquery.min.js"></script>
-<script>
-	console.log("<%-news%>")
-</script>
+
 <script type="text/babel" >
 var Content = React.createClass({
+			agree:function(event){
+				$.ajax({
+					type:"GET",
+					url:"http://localhost:1024/news/agreeFriend",
+					data:{id:event.target.dataset.id}, 
+					success:function(data){
+						//window.location.reload();
+						console.log(data)
+					}
+				})
+			},
+			refuse:function(){
+				console.log(event.target.dataset.id);
+			},
 			render:function(){
+				var _self = this;
 				return (
-					React.createElement("div",{className:"avatarBox"},
-						React.createElement("ul",{className:"news_list"},
+					React.createElement("div",{className:"newsBox"},
+						React.createElement("dl",{className:"news_list"},
+							React.createElement("dt",{className:"news_title"},
+								React.createElement("span",{},"消息中心")
+							),
 							this.props.newsList.map(function(todo,index){
 								return (
-									React.createElement("li",{},
+									React.createElement("dd",{key:index},
 										React.createElement("div",{className:"news_avatar"},
 											React.createElement("img",{src:todo.avatar},null)
 										),
@@ -31,7 +47,11 @@ var Content = React.createClass({
 											React.createElement("span",{className:"news_name"},todo.first_name),
 											React.createElement("span",{className:"news_id"},todo.id)
 										),
-										React.createElement("div",{className:"news_verification"},todo.value)
+										React.createElement("div",{className:"news_verification"},todo.value),
+										React.createElement("div",{className:"news_buttons"},
+											React.createElement("button",{className:"news_agree","data-id":todo.id,onClick:_self.agree},"同意"),
+											React.createElement("button",{className:"news_refuse","data-id":todo.id,onClick:_self.refuse},"拒绝")
+										)
 									)
 								)
 							})
@@ -40,9 +60,10 @@ var Content = React.createClass({
 				)
 			}
 		})
+
 ReactDOM.render(
 	<div>
-		<Content newsList="<%-news%>" />
+		<Content newsList = {JSON.parse('<%-news%>')} />
 	</div>,
 	document.getElementById("content")
 )

@@ -1,4 +1,4 @@
-*{margin:0;padding: 0;}
+*{margin:0;padding: 0; box-sizing: border-box;}
 a{text-decoration: none;}
 input:focus,button:focus{
 	outline: none;
@@ -206,4 +206,23 @@ li{list-style: none;}
 .popUpBox{
 	display: none;
 }
+.newsBox{width: 900px; min-height: 800px; margin:20px auto 0; border:1px solid #ffcdac;border-radius: 8px;}
+.news_list{margin-top: 40px; width: 840px; margin:0 auto;}
+.news_title{margin:6px auto 34px; text-align: center; border-bottom:1px solid #ffcdac; width:246px;position: relative;}
+.news_title span{display: inline-block; width:120px;position: relative; top: 17px;background: #fff;font-size: 26px; color: #fcaf17;}
+.news_title:before{content: "";left: 0;}
+.news_title:after{content: "";right: 0;}
+.news_title:before,.news_title:after{width: 10px; height: 10px; background:#fcaf17;border-radius: 10px; position: absolute;bottom: -5px;}
+
+.news_list dd{height: 120px; border-bottom:1px solid #ffcdac;}
+.news_avatar{float: left;width:92px; height: 92px; border:1px solid #ffcdac;overflow: hidden; margin:13px 16px 0 10px; border-radius: 92px;}
+.news_avatar img{width: 92px; height: 92px;}
+.news_info{float: left; height: 100%; width: 146px;text-align: center;}
+.news_name{display: block; font-size: 20px;margin-top: 30px;}
+.news_id{font-size: 18px}
+.news_verification{float: left; height: 87px; width: 336px; padding-bottom:10px; margin:33px 0 0 26px; overflow: auto;}
+.news_buttons{float: right; height: 100%;}
+.news_buttons button{width: 90px; height: 30px;margin:36px 0 0 10px; border-radius: 4px;}
+.news_agree{ border:none; background: #fcaf17;color: #fff;}
+.news_refuse{border:1px solid #fcaf17; background: #fff; color: #fcaf17;}
 
