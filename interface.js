@@ -90,7 +90,6 @@ app.get("/news/agreeFriend",function(req,res){
 			
 			collection.find({"id":req.query.id-0,"first_name":{$ne:null}}).toArray(function(err,data){//查询目标数据
 				newFriend.push({"id":data[0].id,"first_name":data[0].first_name,"avatar":data[0].avatar})//将目标数据给自身
-
 				var newFriendData = {"id":req.session.thisData.id,"first_name":req.session.thisData.first_name,"avatar":req.session.thisData.avatar}
 				console.log(newFriend,newFriendData)
 				for(var i in newData){
@@ -108,7 +107,6 @@ app.get("/news/agreeFriend",function(req,res){
 				}
 			})
 		})
-
 	})
 })//同意好友请求
 
@@ -139,7 +137,7 @@ app.get("/friend/delte",function(req,res){
 			
 		})
 	})
-})
+})//删除好友
 
 app.get("/news/refuseFriend",function(req,res){
 	MongoClient.connect(mongdbUrl,function(err,db){

@@ -241,7 +241,6 @@ li{list-style: none;}
 .friend_delete{float: right; background: #fcaf17;color: #fff; border:none;width: 130px; height: 38px;font-size: 18px; border-radius: 4px; margin:51px 36px 0 0;}
 /* 好友列表 */
 
-.friendTop{}
 .friendTop input{width: 600px; height: 38px; border:1px solid #ffcdac; padding-left: 10px; color: #fcaf17;border-radius: 4px; margin-left: 40px;}
 .friendTop button{margin-left: 10px; height: 36px;width: 80px; border:none; background:#fcaf17;color:#fff; border-radius: 3px;}
 .friendAddList{margin-top: 20px}
@@ -252,3 +251,4 @@ li{list-style: none;}
 .friendAdd_name{font-size: 24px; color: #333;}
 .friendAdd_submit{float: right; width: 80px; height: 30px; border:1px solid #fcaf17; background: #fff; color:#fcaf17; margin:55px 68px 0 0; border-radius:4px; }
 .friendAdd_already{float: right; width: 80px; height: 30px; border:1px solid #ccc; text-align: center; line-height: 30px; background: #fff; color:#ccc; margin:55px 68px 0 0; border-radius:4px; }
+/* 好友添加 */

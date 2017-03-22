@@ -27,6 +27,5 @@ io.on('connection', function (socket) {
 			}
 		})
     })
-    
   });
 });//测试实时对话
