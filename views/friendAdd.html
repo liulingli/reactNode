@@ -80,15 +80,31 @@ var Content = React.createClass({
 					),
 					React.createElement("ul",{className:"friendAddList"},
 						this.state.friendList.map(function(todo,index){
-							return (
-								React.createElement("li",{key:index},
-									React.createElement("div",{},
-										React.createElement("img",{src:todo.avatar},null)
-									),
-									React.createElement("div",{},todo.first_name),
-									React.createElement("button",{type:"button","data-index":index,onClick:_self.showPopUp},"添加好友")
+							if(todo.relation){
+								return (
+									React.createElement("li",{key:index},
+										React.createElement("div",{className:"friendAdd_avatarBox"},
+											React.createElement("img",{src:todo.avatar},null)
+										),
+										React.createElement("div",{className:"friendAdd_info"},
+											React.createElement("div",{className:"friendAdd_name"},todo.first_name)
+										),
+										React.createElement("div",{className:"friendAdd_already"},"已是好友")
+									)
 								)
-							)
+							}else{
+								return (
+									React.createElement("li",{key:index},
+										React.createElement("div",{className:"friendAdd_avatarBox"},
+											React.createElement("img",{src:todo.avatar},null)
+										),
+										React.createElement("div",{className:"friendAdd_info"},
+											React.createElement("div",{className:"friendAdd_name"},todo.first_name)
+										),
+										React.createElement("button",{type:"button",className:"friendAdd_submit","data-index":index,onClick:_self.showPopUp},"添加好友")
+									)
+								)
+							}
 						})
 					)
 				),
@@ -106,8 +122,6 @@ var Content = React.createClass({
 		)
 	}
 })
-
-
 
 ReactDOM.render(
 	<Content />,

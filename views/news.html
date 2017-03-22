@@ -26,8 +26,17 @@ var Content = React.createClass({
 					}
 				})
 			},
-			refuse:function(){
+			refuse:function(event){
 				console.log(event.target.dataset.id);
+				$.ajax({
+					type:"GET",
+					url:"http://localhost:1024/news/refuseFriend",
+					data:{id:event.target.dataset.id}, 
+					success:function(data){
+						window.location.reload();
+						console.log(data)
+					}
+				})
 			},
 			render:function(){
 				var _self = this;

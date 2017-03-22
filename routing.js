@@ -71,7 +71,6 @@ app.get("/news",function(req,res){
 			res.render("news",{component:news(data[0].news?data[0].news:[]),news:JSON.stringify(data[0].news)});
 		})
 	})
-	
 })//消息中心
 
 app.get("/registered",function(req,res){
@@ -112,8 +111,14 @@ app.get("/form",function(req,res){
 app.get("/friend",function(req,res){
 	if(!req.session.status){
 		res.redirect('./login');
+		return;
 	}
-	res.render("friend",{component:friend(),name:req.session.status});
+	MongoClient.connect(mongdbUrl,function(err,db){
+		var collection = db.collection("cool");
+		collection.find({"id":req.session.thisData.id,"first_name":{$ne:null}}).toArray(function(err,data){
+			res.render("friend",{component:friend(data[0].friend),friendList:JSON.stringify(data[0].friend)});
+		})
+	})
 })//好友列表
 
 app.get("/addFriend",function(req,res){
@@ -122,7 +127,5 @@ app.get("/addFriend",function(req,res){
 	}
 	res.render("friendAdd",{component:friendAdd(),name:req.session.status});
 })//查找好友
-
-
 
 module.exports = app;

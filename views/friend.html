@@ -17,15 +17,41 @@
 
 <script type="text/babel" >
 var Content = React.createClass({
+	deleatFriend:function(event){
+		console.log(event.target.dataset.id)
+		$.ajax({
+			type:"GET",
+			url:"http://localhost:1024/friend/delte",
+			data:{id:event.target.dataset.id}, 
+			success:function(data){
+				window.location.reload();
+				console.log(data)
+			}
+		})
+	},
 	render:function(){
+		var _self = this;
 		return (
 			React.createElement("div",{className:"friendBox"},
 				React.createElement("div",{className:"friendTop"},
-					React.createElement("a",{href:"news"},"消息中心"),
-					React.createElement("a",{href:"addFriend"},"添加好友")
+					React.createElement("a",{href:"news",className:"friend_news"},"消息中心"),
+					React.createElement("a",{href:"addFriend",className:"friend_add"},"添加好友")
 				),
 				React.createElement("ul",{className:"friendList"},
-					React.createElement("li",{},"列表")
+					this.props.friendList.map(function(todo,index){
+						return (
+							React.createElement("li",{key:index},
+								React.createElement("div",{className:"friend_avatarBox"},
+									React.createElement("img",{src:todo.avatar},null)
+								),
+								React.createElement("div",{className:"friend_infoBox"},
+									React.createElement("div",{className:"friend_name"},todo.first_name),
+									React.createElement("span",{className:"friend_id"},todo.id)
+								),
+								React.createElement("button",{className:"friend_delete","data-id":todo.id,onClick:_self.deleatFriend},"删除好友")
+							)
+						)
+					})
 				)
 			)
 		)
@@ -33,9 +59,7 @@ var Content = React.createClass({
 })
 
 ReactDOM.render(
-	<div>
-		<Content />
-	</div>,
+	<Content friendList={JSON.parse('<%-friendList%>')} />,
 	document.getElementById("content")
 )
 </script>

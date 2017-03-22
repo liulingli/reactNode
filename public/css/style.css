@@ -206,14 +206,13 @@ li{list-style: none;}
 .popUpBox{
 	display: none;
 }
-.newsBox{width: 900px; min-height: 800px; margin:20px auto 0; border:1px solid #ffcdac;border-radius: 8px;}
+.newsBox,.friendBox{width: 900px; min-height: 800px; margin:20px auto 0; border:1px solid #ffcdac;border-radius: 8px;}
 .news_list{margin-top: 40px; width: 840px; margin:0 auto;}
 .news_title{margin:6px auto 34px; text-align: center; border-bottom:1px solid #ffcdac; width:246px;position: relative;}
 .news_title span{display: inline-block; width:120px;position: relative; top: 17px;background: #fff;font-size: 26px; color: #fcaf17;}
 .news_title:before{content: "";left: 0;}
 .news_title:after{content: "";right: 0;}
 .news_title:before,.news_title:after{width: 10px; height: 10px; background:#fcaf17;border-radius: 10px; position: absolute;bottom: -5px;}
-
 .news_list dd{height: 120px; border-bottom:1px solid #ffcdac;}
 .news_avatar{float: left;width:92px; height: 92px; border:1px solid #ffcdac;overflow: hidden; margin:13px 16px 0 10px; border-radius: 92px;}
 .news_avatar img{width: 92px; height: 92px;}
@@ -225,4 +224,31 @@ li{list-style: none;}
 .news_buttons button{width: 90px; height: 30px;margin:36px 0 0 10px; border-radius: 4px;}
 .news_agree{ border:none; background: #fcaf17;color: #fff;}
 .news_refuse{border:1px solid #fcaf17; background: #fff; color: #fcaf17;}
+/* 消息中心 */
 
+.friendBox{}
+.friendTop{overflow: hidden; width: 762px; margin:20px auto 0;}
+.friend_news,.friend_add{padding:8px 32px; border:1px solid #fcaf17; border-radius:4px; color: #fcaf17; font-size: 24px;}
+.friend_news{float: left;}
+.friend_add{float: right;}
+.friendList{width: 840px;margin:30px auto 0;}
+.friendList li{ height: 140px; border-bottom: 1px solid #ffcdac;}
+.friend_avatarBox{float: left;width: 92px; height: 92px;text-align: center; margin:24px 30px 0 40px; border:1px solid #ffcdac; border-radius: 92px; overflow: hidden;}
+.friend_avatarBox img{max-width: 92px; max-height: 92px;}
+.friend_infoBox{float: left;color: #666;margin-top: 35px;}
+.friend_name{font-size: 24px;}
+.friend_id{font-size: 22px;}
+.friend_delete{float: right; background: #fcaf17;color: #fff; border:none;width: 130px; height: 38px;font-size: 18px; border-radius: 4px; margin:51px 36px 0 0;}
+/* 好友列表 */
+
+.friendTop{}
+.friendTop input{width: 600px; height: 38px; border:1px solid #ffcdac; padding-left: 10px; color: #fcaf17;border-radius: 4px; margin-left: 40px;}
+.friendTop button{margin-left: 10px; height: 36px;width: 80px; border:none; background:#fcaf17;color:#fff; border-radius: 3px;}
+.friendAddList{margin-top: 20px}
+.friendAddList li{height: 140px; width: 840px; border-bottom:1px solid #ffcdac; margin:0 auto;}
+.friendAdd_avatarBox{float: left; width: 92px; margin:22px 28px 0 80px; height: 92px; border:1px solid #ffcdac; text-align: center; border-radius: 92px; overflow: hidden;}
+.friendAdd_avatarBox img{max-width: 92px; max-height: 92px;}
+.friendAdd_info{float: left; margin-top: 48px;}
+.friendAdd_name{font-size: 24px; color: #333;}
+.friendAdd_submit{float: right; width: 80px; height: 30px; border:1px solid #fcaf17; background: #fff; color:#fcaf17; margin:55px 68px 0 0; border-radius:4px; }
+.friendAdd_already{float: right; width: 80px; height: 30px; border:1px solid #ccc; text-align: center; line-height: 30px; background: #fff; color:#ccc; margin:55px 68px 0 0; border-radius:4px; }

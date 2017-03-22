@@ -13,16 +13,29 @@ app.get("/findFriend",function(req,res){
 	MongoClient.connect(mongdbUrl,function(err,db){
 		var collection = db.collection("cool");
 		collection.find({"first_name":{$ne:null},$or:[{"first_name":req.query.val},{"id":req.query.val-0}]}).toArray(function(err,data){
+			for(var i in data){
+				
+			}
 			if(err){
 				console.log(err)
 			}else{
 				db.close();
 				for(var i in data){
-					var thisData = data[i];
-					if(thisData.avatar == "null" || thisData == null){
-						thisData.avatar = "public/images/portrait.jpg";
+					for(var k in data[i].friend){
+						var thisData = {};
+						thisData.first_name = data[i].first_name;
+						thisData.id = data[i].id;
+						if(thisData.avatar == "null" || thisData == null){
+							thisData.avatar = "public/images/portrait.jpg";
+						}else{
+							thisData.avatar = data[i].avatar;
+						}
+						console.log(data[i].friend[k].first_name,req.query.val)
+						if(data[i].friend[k].first_name == req.session.thisData.first_name || data[i].friend[k].id == req.session.thisData.first_name){
+							thisData.relation = "friend";
+						}
+						data[i] = thisData;
 					}
-					delete thisData.last_password;
 				}
 				res.end(JSON.stringify(data));
 			}
@@ -55,7 +68,7 @@ app.get("/verification",function(req,res){
 					db.close();
 					return;
 				}
-			}//请求已存在 req.session.thisData
+			}//好友请求已存在
 			collection.update({"first_name":req.query.aims},{$set:{"news":newsData}},function(err,result){
 				if(err){
 					console.log(err)
@@ -72,28 +85,19 @@ app.get("/news/agreeFriend",function(req,res){
 	MongoClient.connect(mongdbUrl,function(err,db){
 		var collection = db.collection("cool");
 		
-		//req.session.thisData.id 1
-		//req.query.id 2
-
-		//mike好友列表无，zhang的好友数据是他自己
-
- 		//collection.findAndModify({"id":req.session.thisData.id,"first_name":{$ne:null}},[],{$pull:{news:newFriendData}},{new:true},function(){
-
-		//})
-
-		collection.find({"id":req.session.thisData.id,"first_name":{$ne:null}}).toArray(function(err,data){//查询zhang数据
+		collection.find({"id":req.session.thisData.id,"first_name":{$ne:null}}).toArray(function(err,data){//查询自身数据
 			var newData = data[0].news,newFriend = data[0].friend;
-			console.log(req.query.id,data)
-			collection.find({"id":req.query.id,"first_name":{$ne:null}}).toArray(function(err,data){//查询mike数据
-				console.log(data)
-				newFriend.push({"id":data[0].id,"first_name":data[0].first_name,"avater":data[0].avater})//给zhang
-				var newFriendData = {"id":req.session.thisData.id,"first_name":req.session.thisData.first_name,"avatar":req.session.thisData.avatar}//给mike
+			
+			collection.find({"id":req.query.id-0,"first_name":{$ne:null}}).toArray(function(err,data){//查询目标数据
+				newFriend.push({"id":data[0].id,"first_name":data[0].first_name,"avatar":data[0].avatar})//将目标数据给自身
 
+				var newFriendData = {"id":req.session.thisData.id,"first_name":req.session.thisData.first_name,"avatar":req.session.thisData.avatar}
+				console.log(newFriend,newFriendData)
 				for(var i in newData){
 					if(newData[i].id == req.query.id){
 						newData.splice(i,1)
-						collection.update({"id":req.session.thisData.id,"first_name":{$ne:null}},{$set:{"news":newData,"friend":newFriend}},function(err,data){//修改zhang
-							collection.findAndModify({"id":req.query.id,"first_name":{$ne:null}},[],{$push:{friend:newFriendData}},{new:true},function(err,result){//查询mike
+						collection.update({"id":req.session.thisData.id,"first_name":{$ne:null}},{$set:{"news":newData,"friend":newFriend}},function(err,data){//修改自身
+							collection.findAndModify({"id":req.query.id-0,"first_name":{$ne:null}},[],{$push:{friend:newFriendData}},{new:true},function(err,result){//修改目标
 								console.log("修改成功")
 				    			res.end("200")
 				    			return;
@@ -103,12 +107,58 @@ app.get("/news/agreeFriend",function(req,res){
 					}
 				}
 			})
-			//console.log("返回了404");
-			//res.end("404")
 		})
 
 	})
-})//同意
+})//同意好友请求
+
+app.get("/friend/delte",function(req,res){
+	MongoClient.connect(mongdbUrl,function(err,db){
+		var collection = db.collection("cool");
+		collection.find({id:req.session.thisData.id,"first_name":{$ne:null}}).toArray(function(err,data){
+			var newData = data[0].friend;
+			for(var i in data[0].friend){
+				if(data[0].friend[i].id == req.query.id){
+					newData.splice(i,1);
+					collection.update({id:req.session.thisData.id,"first_name":{$ne:null}},{$set:{"friend":newData}},function(err,data){
+						collection.find({id:req.query.id-0,"first_name":{$ne:null}}).toArray(function(err,data){
+							var newData = data[0].friend;
+							for(var i in data[0].friend){
+								if(data[0].friend[i].id == req.session.thisData.id){
+									newData.splice(i,1);
+									collection.update({id:req.query.id-0,"first_name":{$ne:null}},{$set:{"friend":newData}},function(){
+										console.log("删除成功");
+										res.end("200");
+									})
+								}
+							}
+						})
+					})
+				}
+			}
+			
+		})
+	})
+})
+
+app.get("/news/refuseFriend",function(req,res){
+	MongoClient.connect(mongdbUrl,function(err,db){
+		var collection = db.collection("cool");
+		
+		collection.find({"id":req.session.thisData.id,"first_name":{$ne:null}}).toArray(function(err,data){//查询自身数据
+			for(var i in data[0].news){
+				if(data[0].news[i].id == req.query.id){
+					data[0].news.splice(i,1)
+					collection.update({"id":req.session.thisData.id,"first_name":{$ne:null}},{$set:{"news":data[0].news}},function(){
+						console.log("删除成功");
+						res.end("200");
+					})
+				}
+			}
+		})
+
+	})
+})//拒绝好友请求
 
 app.post("/form_file",function(req,res){
     MongoClient.connect(mongdbUrl,function(err,db){
