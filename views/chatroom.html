@@ -34,14 +34,15 @@ var Content = React.createClass({
 			_self.state.child.push(data);
 			_self.setState({child:_self.state.child})
 		});
-	},
+	},//初始挂起链接
 	setData:function(event){
 		this.setState({text:event.target.value});
-	},
+	},//textarea更改数据
 	emitThing:function(){
 		this.setState({text:""});
+		this.refs.textareaObj.value = "";
 		socket.emit("addNews",{name:this.props.name,text:this.state.text});
-	},
+	},//发送消息
 	render:function(){
 		return (
 			React.createElement("div",{className:"chatroomBox"},
@@ -63,7 +64,7 @@ var Content = React.createClass({
 					)
 				),
 				React.createElement("div",{className:"chatroomBottom"},
-					React.createElement("textarea",{className:"textContent",onChange:this.setData,defaultValue:this.state.text}),
+					React.createElement("textarea",{className:"textContent",onChange:this.setData,ref:"textareaObj",defaultValue:this.state.text}),
 					React.createElement("button",{type:"button",onClick:this.emitThing},"提交")
 				)
 			)

@@ -203,9 +203,6 @@ li{list-style: none;}
 	border-radius: 6px;
 	color: #333;
 }
-.popUpBox{
-	display: none;
-}
 .newsBox,.friendBox{width: 900px; min-height: 800px; margin:20px auto 0; border:1px solid #ffcdac;border-radius: 8px;}
 .news_list{margin-top: 40px; width: 840px; margin:0 auto;}
 .news_title{margin:6px auto 34px; text-align: center; border-bottom:1px solid #ffcdac; width:246px;position: relative;}
@@ -251,4 +248,11 @@ li{list-style: none;}
 .friendAdd_name{font-size: 24px; color: #333;}
 .friendAdd_submit{float: right; width: 80px; height: 30px; border:1px solid #fcaf17; background: #fff; color:#fcaf17; margin:55px 68px 0 0; border-radius:4px; }
 .friendAdd_already{float: right; width: 80px; height: 30px; border:1px solid #ccc; text-align: center; line-height: 30px; background: #fff; color:#ccc; margin:55px 68px 0 0; border-radius:4px; }
+.popUpBox{ width: 400px; height: 230px; display: none; background: #fbc65e;border-right: 8px;position: fixed; margin:-115px 0 0 -200px; left: 50%;top: 50%; }
+.popUp_titleBox{width: 360px; margin:20px auto 0; color: #fff; overflow: hidden;}
+.popUp_title{float: left;font-size: 18px;}
+.clone{float: right;cursor: pointer;font-size: 24px;}
+.popUpBox_main{text-align: center;overflow: hidden;}
+.popUpBox_main input{width: 360px;display: block;margin:40px auto 20px;border:none; color:#666;background: #fff;padding:0 10px;height: 36px; border-radius: 4px;}
+.popUpBox_main button{width: 118px; height: 34px; border:#fff 1px solid; color: #fff;font-size: 20px; background:none;}
 /* 好友添加 */

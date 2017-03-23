@@ -1,13 +1,10 @@
-var express = require("express"),
-	MongoClient = require("mongodb").MongoClient,
-	bodyParser = require('body-parser'),
-	fs = require("fs"),
-    cookieParser = require('cookie-parser'),
-    session = require('express-session'),
-    multer  = require('multer'),
-    app  = require('./routing.js');
+var server = require("./server.js"),
+	fs = require("fs");
 
-var mongdbUrl = 'mongodb://localhost:27017/runoob';
+var mongdbUrl = server.mongodbUrl,
+	MongoClient = server.mongodb,
+	app = server.app,
+	io = server.io;
 
 app.get("/findFriend",function(req,res){
 	MongoClient.connect(mongdbUrl,function(err,db){
@@ -91,13 +88,11 @@ app.get("/news/agreeFriend",function(req,res){
 			collection.find({"id":req.query.id-0,"first_name":{$ne:null}}).toArray(function(err,data){//查询目标数据
 				newFriend.push({"id":data[0].id,"first_name":data[0].first_name,"avatar":data[0].avatar})//将目标数据给自身
 				var newFriendData = {"id":req.session.thisData.id,"first_name":req.session.thisData.first_name,"avatar":req.session.thisData.avatar}
-				console.log(newFriend,newFriendData)
 				for(var i in newData){
 					if(newData[i].id == req.query.id){
 						newData.splice(i,1)
 						collection.update({"id":req.session.thisData.id,"first_name":{$ne:null}},{$set:{"news":newData,"friend":newFriend}},function(err,data){//修改自身
 							collection.findAndModify({"id":req.query.id-0,"first_name":{$ne:null}},[],{$push:{friend:newFriendData}},{new:true},function(err,result){//修改目标
-								console.log("修改成功")
 				    			res.end("200")
 				    			return;
 				    		})//更改请求用户
@@ -125,7 +120,6 @@ app.get("/friend/delte",function(req,res){
 								if(data[0].friend[i].id == req.session.thisData.id){
 									newData.splice(i,1);
 									collection.update({id:req.query.id-0,"first_name":{$ne:null}},{$set:{"friend":newData}},function(){
-										console.log("删除成功");
 										res.end("200");
 									})
 								}
@@ -229,5 +223,23 @@ app.post("/process_registered",function(req,res){
 	});
 })//注册表单
 
-
+io.on('connection', function (socket) {
+  //socket.emit('news', { hello: 'world' });
+  socket.on('addNews', function (data) {
+    //console.log(data);
+    var newData = data;
+    MongoClient.connect("mongodb://localhost:27017/runoob",function(err,db){
+		var collection = db.collection("cool");
+	    collection.find({"first_name":data.name}).toArray(function(err,data){
+			if(err){
+				console.log(err)
+			}else{
+				db.close();
+				newData.avatar = data[0].avatar && data[0].avatar != "null" ?data[0].avatar:"public/images/portrait.jpg";
+				io.sockets.emit('news', newData);
+			}
+		})
+    })
+  });
+});//实时对话
 

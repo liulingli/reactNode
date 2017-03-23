@@ -21,13 +21,12 @@ var Content = React.createClass({
 					url:"http://localhost:1024/news/agreeFriend",
 					data:{id:event.target.dataset.id}, 
 					success:function(data){
-						//window.location.reload();
+						window.location.reload();
 						console.log(data)
 					}
 				})
-			},
+			},//同意
 			refuse:function(event){
-				console.log(event.target.dataset.id);
 				$.ajax({
 					type:"GET",
 					url:"http://localhost:1024/news/refuseFriend",
@@ -37,7 +36,7 @@ var Content = React.createClass({
 						console.log(data)
 					}
 				})
-			},
+			},//拒绝
 			render:function(){
 				var _self = this;
 				return (

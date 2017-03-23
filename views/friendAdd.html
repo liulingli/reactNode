@@ -26,7 +26,6 @@ var Content = React.createClass({
 		this.refs.popUp.style.display = "block";
 		this.setState({index:event.target.dataset.index})
 	},//显示弹出框
-	
 	verification:function(){
 		var _self = this;
 		var thisData = {};
@@ -55,7 +54,6 @@ var Content = React.createClass({
 			}
 		})
 	},//发送验证消息
-
 	findFriend:function(){
 		var _self = this;
 		$.ajax({
@@ -69,6 +67,9 @@ var Content = React.createClass({
 			}
 		})
 	},//查找好友
+	clone:function(){
+		this.refs.popUp.style.display = "none";
+	},
 	render:function(){
 		var _self = this;
 		return (
@@ -109,11 +110,11 @@ var Content = React.createClass({
 					)
 				),
 				React.createElement("div",{className:"popUpBox",ref:"popUp"},
-					React.createElement("div",{className:"popUpTitle"},
-						React.createElement("span",{},"验证消息"),
-						React.createElement("span",{className:"clone"})
+					React.createElement("div",{className:"popUp_titleBox"},
+						React.createElement("span",{className:"popUp_title"},"验证消息"),
+						React.createElement("span",{className:"clone",onClick:this.clone},"x")
 					),
-					React.createElement("div",{},
+					React.createElement("div",{className:"popUpBox_main"},
 						React.createElement("input",{type:"text",ref:"verificationValue"},null),
 						React.createElement("button",{type:"button",onClick:this.verification},"提交")
 					)
