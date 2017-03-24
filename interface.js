@@ -1,10 +1,12 @@
 var server = require("./server.js"),
+    _ = require('underscore'),
 	fs = require("fs");
 
 var mongdbUrl = server.mongodbUrl,
 	MongoClient = server.mongodb,
 	app = server.app,
-	io = server.io;
+	io = server.io,
+	hashName = server.hashName;
 
 app.get("/findFriend",function(req,res){
 	MongoClient.connect(mongdbUrl,function(err,db){
@@ -104,6 +106,13 @@ app.get("/news/agreeFriend",function(req,res){
 		})
 	})
 })//同意好友请求
+
+app.get("/returnname",function(req,res){
+	if(!req.session.status){
+		return;
+	}
+	res.end(req.session.status)
+})//返回名称
 
 app.get("/friend/delte",function(req,res){
 	MongoClient.connect(mongdbUrl,function(err,db){
@@ -223,23 +232,44 @@ app.post("/process_registered",function(req,res){
 	});
 })//注册表单
 
+app.get("/chat",function(req,res){
+	if(req.query.id){
+		req.session.aimsId = id;
+		res.end("200");
+		//res.render("chat",{component:chat(),name:req.session.status});
+	}
+})//私聊接口
+
+app.get("/friend/onlineName",function(req,res){
+	var onlineList = [];
+	res.end(JSON.stringify(hashName))
+})//好友是否在线
+
+console.log(io.rooms)
 io.on('connection', function (socket) {
-  //socket.emit('news', { hello: 'world' });
-  socket.on('addNews', function (data) {
-    //console.log(data);
-    var newData = data;
-    MongoClient.connect("mongodb://localhost:27017/runoob",function(err,db){
-		var collection = db.collection("cool");
-	    collection.find({"first_name":data.name}).toArray(function(err,data){
-			if(err){
-				console.log(err)
-			}else{
-				db.close();
-				newData.avatar = data[0].avatar && data[0].avatar != "null" ?data[0].avatar:"public/images/portrait.jpg";
-				io.sockets.emit('news', newData);
-			}
-		})
-    })
-  });
-});//实时对话
+	socket.on("collect",function(data){
+		hashName[data.name] = socket.id;
+		console.log(hashName)
+	})//创建hashName获取当前在线用户
+	socket.on("chat",function(data){
+		var toSocket = _.findWhere(io.sockets.sockets,{id:hashName[data.name]});
+		console.log(data.name)
+		toSocket.emit("message",{value:"成功"})
+	})//向指定用户发送消息
+	socket.on('addNews', function (data) {
+	    var newData = data;
+	    MongoClient.connect("mongodb://localhost:27017/runoob",function(err,db){
+			var collection = db.collection("cool");
+		    collection.find({"first_name":data.name}).toArray(function(err,data){
+				if(err){
+					console.log(err)
+				}else{
+					db.close();
+					newData.avatar = data[0].avatar && data[0].avatar != "null" ?data[0].avatar:"public/images/portrait.jpg";
+					io.sockets.emit('news', newData);
+				}
+			})
+	    })
+	});//公共聊天
+});//会话
 

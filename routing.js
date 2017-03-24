@@ -8,11 +8,14 @@ var server = require("./server.js")
 	chatroom = require("./reactModel/chatroom.js"),//聊天室模块
 	friend = require("./reactModel/friend.js"),//好友列表模块
 	friendAdd = require("./reactModel/friendAdd.js"),//添加好友模块
+	chat = require("./reactModel/chat.js"),//添加好友模块
 	news = require("./reactModel/news.js");//消息中心模块
 
 var mongdbUrl = server.mongodbUrl,
 	MongoClient = server.mongodb,
-	app = server.app;
+	app = server.app
+	io = server.io,
+	hashName = server.hashName;
 
 app.get("/",function(req,res){
 	var statusJson = req.session.status?req.session.status:"未登录";
@@ -48,6 +51,16 @@ app.get("/chatroom",function(req,res){
 	res.render("chatroom",{component:chatroom(),name:req.session.status});
 })//聊天室
 
+app.get("/chat",function(req,res){
+	if(!req.session.status){
+		res.redirect('./login');
+		return;
+	}
+	if(req.query.id){
+		res.render("chat",{component:chat(),name:req.session.status});
+	}
+})//私聊
+
 app.get("/cancelLogin",function(req,res){
 	req.session.status = false;
 	res.redirect('./');
@@ -77,6 +90,7 @@ app.get("/friend",function(req,res){
 		res.redirect('./login');
 		return;
 	}
+	io.sockets.emit('online',{});
 	MongoClient.connect(mongdbUrl,function(err,db){
 		var collection = db.collection("cool");
 		collection.find({"id":req.session.thisData.id,"first_name":{$ne:null}}).toArray(function(err,data){

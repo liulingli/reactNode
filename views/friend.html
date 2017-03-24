@@ -14,9 +14,22 @@
 
 <script src="public/js/jquery.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
-
+<script src="public/js/base.js"></script>
 <script type="text/babel" >
+
 var Content = React.createClass({
+	getInitialState:function(){
+		$.ajax({
+			type:"GET",
+			url:"http://localhost:1024/friend/onlineName",
+			success:function(data){
+				console.log(data)
+			}
+		})
+		return {
+
+		}
+	},
 	deleatFriend:function(event){
 		console.log(event.target.dataset.id)
 		$.ajax({
@@ -28,7 +41,10 @@ var Content = React.createClass({
 				console.log(data)
 			}
 		})
-	},
+	},//删除好友
+	chatFriend:function(event){
+		socket.emit("chat",{name:event.target.dataset.name});
+	},//发送私聊请求
 	render:function(){
 		var _self = this;
 		return (
@@ -48,7 +64,10 @@ var Content = React.createClass({
 									React.createElement("div",{className:"friend_name"},todo.first_name),
 									React.createElement("span",{className:"friend_id"},todo.id)
 								),
-								React.createElement("button",{className:"friend_delete","data-id":todo.id,onClick:_self.deleatFriend},"删除好友")
+								React.createElement("div",{className:"friend_buttons"},
+									React.createElement("button",{className:"friend_chat","data-name":todo.first_name,onClick:_self.chatFriend},"私聊"),
+									React.createElement("button",{className:"friend_delete","data-id":todo.id,onClick:_self.deleatFriend},"删除好友")
+								)
 							)
 						)
 					})

@@ -235,7 +235,10 @@ li{list-style: none;}
 .friend_infoBox{float: left;color: #666;margin-top: 35px;}
 .friend_name{font-size: 24px;}
 .friend_id{font-size: 22px;}
-.friend_delete{float: right; background: #fcaf17;color: #fff; border:none;width: 130px; height: 38px;font-size: 18px; border-radius: 4px; margin:51px 36px 0 0;}
+.friend_buttons{float: right;margin-right: 36px;}
+.friend_chat{float: left;}
+.friend_delete,.friend_chat{ float: left;background: #fcaf17;color: #fff; border:none;width: 130px; height: 38px;font-size: 18px; border-radius: 4px; margin:51px 0 0 15px;}
+
 /* 好友列表 */
 
 .friendTop input{width: 600px; height: 38px; border:1px solid #ffcdac; padding-left: 10px; color: #fcaf17;border-radius: 4px; margin-left: 40px;}

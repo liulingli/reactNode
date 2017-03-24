@@ -8,7 +8,7 @@ var express = require("express"),
     session = require('express-session'),
     multer  = require('multer');
 
-var app = express();
+var app = express(),hashName = new Array();
 
 app.engine('.html',ejs.__express);//使用ejs解析html模板
 
@@ -50,5 +50,6 @@ module.exports = {
 	server:server,
 	mongodb:MongoClient,
 	io:io,
-	mongodbUrl:'mongodb://localhost:27017/runoob'
+	mongodbUrl:'mongodb://localhost:27017/runoob',
+	hashName:hashName
 }
